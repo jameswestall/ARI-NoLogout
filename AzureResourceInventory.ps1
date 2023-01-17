@@ -242,14 +242,6 @@ param ($TenantID,
                     [int]$SelectTenant = read-host "Select Tenant ( default 1 )"
                     $defaultTenant = --$SelectTenant
                     $TenantID = $Tenants[$defaultTenant]
-                    if($DeviceLogin.IsPresent)
-                        {
-                            az login --use-device-code -t $TenantID
-                        }
-                    else 
-                        {
-                            az login -t $TenantID --only-show-errors | Out-Null
-                        }
                 }
 
                 write-host "Extracting from Tenant $TenantID"
@@ -269,28 +261,6 @@ param ($TenantID,
                     }
             }
             else {
-                az account clear | Out-Null
-                if (!$Appid) {
-                    if($DeviceLogin.IsPresent)
-                        {
-                            az login --use-device-code -t $TenantID
-                        }
-                    else 
-                        {
-                            az login -t $TenantID --only-show-errors | Out-Null
-                        }
-                    }
-                elseif ($Appid -and $Secret -and $tenantid) {
-                    write-host "Using Service Principal Authentication Method"
-                    az login --service-principal -u $appid -p $secret -t $TenantID | Out-Null
-                }
-                else{
-                    write-host "You are trying to use Service Principal Authentication Method in a wrong way."
-                    write-host "It's Mandatory to specify Application ID, Secret and Tenant ID in Azure Resource Inventory"
-                    write-host ""
-                    write-host ".\AzureResourceInventory.ps1 -appid <SP AppID> -secret <SP Secret> -tenant <TenantID>"
-                    Exit
-                }
                 $Global:Subscriptions = az account list --output json --only-show-errors | ConvertFrom-Json
                 $Global:Subscriptions = $Subscriptions | Where-Object { $_.tenantID -eq $TenantID }
                 if ($SubscriptionID)
