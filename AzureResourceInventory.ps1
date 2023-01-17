@@ -220,19 +220,7 @@ param ($TenantID,
             Write-Host $CurrentCloudEnvName.name -BackgroundColor Green
             if (!$TenantID) {
                 write-host "Tenant ID not specified. Use -TenantID parameter if you want to specify directly. "
-                write-host "Authenticating Azure"
-                write-host ""
-                Write-Debug ('Cleaning az account cache')
-                az account clear | Out-Null
-                Write-Debug ('Calling az login')
-                if($DeviceLogin.IsPresent)
-                    {
-                        az login --use-device-code
-                    }
-                else 
-                    {
-                        az login --only-show-errors | Out-Null
-                    }
+                write-host "Authenticated Azure"
                 write-host ""
                 write-host ""
                 $Tenants = az account list --query [].homeTenantId -o tsv --only-show-errors | Sort-Object -Unique
